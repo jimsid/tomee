@@ -1,4 +1,4 @@
 ---
-- hosts: ci-server
+- hosts: li-server
   roles:
     - jenkins-server
