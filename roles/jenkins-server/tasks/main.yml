@@ -85,6 +85,10 @@
     path: /opt/tomee/logs
     owner: tomee
 
+-name: configuration du fihier système pour tomee
+ lineinfile: 
+   name: '/etc/systemd/system/tomee.service'
+   line: 'JAVA_HOME={{java_home}}'
 
 - name: copie du fichier de déploiement pour Jenkins
   template:
