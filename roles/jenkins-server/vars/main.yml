@@ -1,8 +1,9 @@
 tomcat_home: '/home/tomcat8'
 tomcat_dir: '/var/lib/tomcat8'
 jenkins_home: '{{tomcat_home}}/jenkins'
-tomee_dest: '{{tomcat_home}}/tmp'
 jenkins_url: 'http://mirrors.jenkins.io/war-stable/latest/jenkins.war'
 tomee_home: '/home/tomee'
+tomee_dest: '{{tomee_home}}/tmp'
 tomee_url: 'http://repo.maven.apache.org/maven2/org/apache/tomee/apache-tomee/7.0.3/apache-tomee-7.0.3-plus.tar.gz
 tomee_dir: '/opt/tomee'
+java_home: '/usr/lib/jvm/java-1.8.0-openjdk-amd64'
