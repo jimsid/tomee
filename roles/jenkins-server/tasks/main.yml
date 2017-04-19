@@ -39,13 +39,6 @@
     owner: tomee
     group: tomee
 
-- name: configuration du répertoire pour jenkins
-  lineinfile:
-    name: '/etc/default/tomcat8'
-    line: 'JENKINS_HOME={{jenkins_home}}'
-  notify:
-    - relancer Tomcat
-
 - name: installation de tomee
   get_url:
     url: '{{tomee_url}}'
@@ -84,11 +77,23 @@
   file:
     path: /opt/tomee/logs
     owner: tomee
+    
+- name: copie du fichier de déploiement pour Tomee
+  template:
+    src: roles/jenkins-server/templates/context.xml
+    dest: '{{tomcat_dir}}/conf/Catalina/localhost/ROOT.xml'
+    owner: tomee
+    group: tomee
+  notify:
+    - relancer Tomee
+
 
 -name: configuration du fihier système pour tomee
  lineinfile: 
    name: '/etc/systemd/system/tomee.service'
    line: 'JAVA_HOME={{java_home}}'
+ notify:
+   - relancer Tomee
 
 - name: copie du fichier de déploiement pour Jenkins
   template:
