@@ -81,7 +81,7 @@
 - name: copie du fichier de déploiement pour Tomee
   template:
     src: roles/jenkins-server/templates/context.xml
-    dest: '{{tomcat_dir}}/conf/Catalina/localhost/ROOT.xml'
+    dest: '/etc/systemd/system/tomee.service'
     owner: tomee
     group: tomee
   notify:
