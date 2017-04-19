@@ -65,9 +65,26 @@
     group: tomee
     mode: "g+r, g+x"
 
-- name: changement de propriétaire sur les répertoires work, temp, webapps et logs
+- name: changement de propriétaire sur le répertoire webapps
   file:
     path: /opt/tomee/webapps
+    owner: tomee
+    
+- name: changement de propriétaire sur le répertoire work
+  file:
+    path: /opt/tomee/work
+    owner: tomee
+    
+- name: changement de propriétaire sur le répertoire temp
+  file:
+    path: /opt/tomee/temp
+    owner: tomee
+
+- name: changement de propriétaire sur le repertoire logs
+  file:
+    path: /opt/tomee/logs
+    owner: tomee
+
 
 - name: copie du fichier de déploiement pour Jenkins
   template:
