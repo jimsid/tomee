@@ -92,3 +92,6 @@
     state: restarted
     daemon_reload: yes
     name: systemctl
+    
+- name: démarrer le service tomee
+  systemctl: state=started name=tomee
