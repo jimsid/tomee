@@ -80,26 +80,15 @@
     
 - name: copie du fichier de déploiement pour Tomee
   template:
-    src: roles/jenkins-server/templates/context.xml
+    src: roles/jenkins-server/templates/tomee.service
     dest: '/etc/systemd/system/tomee.service'
     owner: tomee
     group: tomee
   notify:
     - relancer Tomee
-
-
--name: configuration du fihier système pour tomee
- lineinfile: 
-   name: '/etc/systemd/system/tomee.service'
-   line: 'JAVA_HOME={{java_home}}'
- notify:
-   - relancer Tomee
-
-- name: copie du fichier de déploiement pour Jenkins
-  template:
-    src: roles/jenkins-server/templates/context.xml
-    dest: '{{tomcat_dir}}/conf/Catalina/localhost/ROOT.xml'
-    owner: tomcat8
-    group: tomcat8
-  notify:
-    - relancer Tomcat
+    
+- name: redémarrer le démon systemctl
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: systemctl
