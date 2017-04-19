@@ -1,0 +1,79 @@
+- name: installation de Git
+  package: name=git state=present
+
+- name: installation de Maven
+  package: name=maven state=present
+
+- name: installation du jdk8
+  package: name=openjdk-8-jdk-headless state=present
+
+- name: création du compte pour Tomcat8
+  user:
+    name: tomcat8
+    shell: /bin/false
+    system: yes
+    home: '{{tomcat_home}}'
+
+- name: création du compte pour TomEE
+  user:
+    name: tomee
+    shell: /bin/false
+    system: yes
+    home: '{{tomee_home}}'
+
+- name: installation de Tomcat 8
+  package: name=tomcat8 state=present
+  notify:
+    - déplacer l'appli web ROOT par défaut
+
+- name: création d'un groupe tomee
+  group: name=tomee
+
+- name: ajout de l'utilisateur tomee au groupe tomee
+  user: name=tomee groupe=tomee home=/usr/share/tomee createhome=no
+
+- name: création des répertoires pour TomEE
+  file:
+    path: '{{tomee_home}}'
+    state: directory
+    owner: tomee
+    group: tomee
+
+- name: configuration du répertoire pour jenkins
+  lineinfile:
+    name: '/etc/default/tomcat8'
+    line: 'JENKINS_HOME={{jenkins_home}}'
+  notify:
+    - relancer Tomcat
+
+- name: installation de tomee
+  get_url:
+    url: '{{tomee_url}}'
+    dest: '{{tomee_dest}}'
+    group: tomee
+    owner: tomee
+
+- name: extraction de l'archive
+  command: chdir=/opt/ /bin/tar xzvf /opt/apache-tomee-7.0.3-plus.tar.gz -C /opt/ creates=/opt/tomee --strip-components=1
+
+- name: donne les droits d'installation au groupe tomee
+  file: path=/opt/tomee/ owner=tomee group=tomee state=directory recurse=yes
+
+- name: droits de lecture sur le répertoire conf
+  file: 
+    path: /opt/tomee/conf
+    group: tomee
+    mode: "g+r, g+x"
+
+- name: changement de propriétaire sur les répertoires work, temp, webapps et logs
+  file:
+    path: /opt/tomee/webapps
+
+- name: copie du fichier de déploiement pour Jenkins
+  template:
+    src: roles/jenkins-server/templates/context.xml
+    dest: '{{tomcat_dir}}/conf/Catalina/localhost/ROOT.xml'
+    owner: tomcat8
+    group: tomcat8
+  notify:
+    - relancer Tomcat
