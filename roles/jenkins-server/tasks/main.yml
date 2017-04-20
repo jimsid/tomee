@@ -88,7 +88,7 @@
     - relancer Tomee
     
 - name: redémarrer le démon systemctl
-  systemd:
+  systemctl:
     state: restarted
     daemon_reload: yes
     name: systemctl
