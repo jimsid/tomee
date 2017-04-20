@@ -81,17 +81,17 @@
 - name: copie du fichier de déploiement pour Tomee
   template:
     src: roles/jenkins-server/templates/tomee.service
-    dest: '/etc/systemd/system/tomee.service'
+    dest: /etc/systemd/system/tomee.service
     owner: tomee
     group: tomee
   notify:
     - relancer Tomee
     
-- name: redémarrer le démon systemctl
-  systemctl:
+- name: redémarrer le démon systemd
+  systemd:
     state: restarted
     daemon_reload: yes
-    name: systemctl
+    name: tomee.service
     
 - name: démarrer le service tomee
-  systemctl: state=started name=tomee
+  systemd: state=started name=tomee.service
