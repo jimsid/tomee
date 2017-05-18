@@ -1,18 +1,8 @@
-- name: installation de Git
-  package: name=git state=present
-
-- name: installation de Maven
-  package: name=maven state=present
-
 - name: installation du jdk8
   package: name=openjdk-8-jdk-headless state=present
 
-- name: création du compte pour Tomcat8
-  user:
-    name: tomcat8
-    shell: /bin/false
-    system: yes
-    home: '{{tomcat_home}}'
+- name: création du groupe tomee
+  group: name=tomee
 
 - name: création du compte pour TomEE
   user:
@@ -20,17 +10,12 @@
     shell: /bin/false
     system: yes
     home: '{{tomee_home}}'
+    group: tomee
 
 - name: installation de Tomcat 8
   package: name=tomcat8 state=present
   notify:
     - déplacer l'appli web ROOT par défaut
-
-- name: création d'un groupe tomee
-  group: name=tomee
-
-- name: ajout de l'utilisateur tomee au groupe tomee
-  user: name=tomee groupe=tomee home=/usr/share/tomee createhome=no
 
 - name: création des répertoires pour TomEE
   file:
@@ -39,7 +24,14 @@
     owner: tomee
     group: tomee
 
-- name: installation de tomee
+- name: création du répertoire /opt/tomee
+  file:
+    path: /opt/tomee
+    state: directory
+    owner: tomee
+    group: tomee
+
+- name: téléchargement de tomee
   get_url:
     url: '{{tomee_url}}'
     dest: '{{tomee_dest}}'
@@ -47,7 +39,12 @@
     owner: tomee
 
 - name: extraction de l'archive
-  command: chdir=/opt/ /bin/tar xzvf /opt/apache-tomee-7.0.3-plus.tar.gz -C /opt/ creates=/opt/tomee --strip-components=1
+  unarchive:
+    with_items:
+    src: 
+      - "'{{ tomee_dest }}' -C /opt/tomee --strip-components=1" 
+    dest:
+      - "'{{ tomee_dir }}'"
 
 - name: donne les droits d'installation au groupe tomee
   file: path=/opt/tomee/ owner=tomee group=tomee state=directory recurse=yes
@@ -87,11 +84,11 @@
   notify:
     - relancer Tomee
     
-- name: redémarrer le démon systemd
-  systemd:
-    state: restarted
-    daemon_reload: yes
-    name: tomee.service
+#- name: redémarrer le démon systemd
+#  systemd:
+#    state: restarted
+#    daemon_reload: yes
+#    name: tomee.service
     
-- name: démarrer le service tomee
-  systemd: state=started name=tomee.service
+#- name: démarrer le service tomee
+#  systemd: state=started name=tomee.service
