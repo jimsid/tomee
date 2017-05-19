@@ -89,11 +89,11 @@
   notify:
     - relancer Tomee
     
-#- name: redémarrer le démon systemd
-#  systemd:
-#    state: restarted
-#    daemon_reload: yes
-#    name: tomee.service
+- name: redémarrer le démon systemd
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: tomee.service
     
-#- name: démarrer le service tomee
-#  systemd: state=started name=tomee.service
+- name: démarrer le service tomee
+  systemd: state=started name=tomee.service
