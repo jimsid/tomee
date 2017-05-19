@@ -40,14 +40,19 @@
 
 - name: extraction de l'archive
   unarchive:
-    with_items:
-    src: 
-      - "'{{ tomee_dest }}' -C /opt/tomee --strip-components=1" 
-    dest:
-      - "'{{ tomee_dir }}'"
-
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    remote_src: True
+  with_items:
+    - { src: '{{tomee_dest}}', dest: '{{tomee_dir}}' }
+      
 - name: donne les droits d'installation au groupe tomee
-  file: path=/opt/tomee/ owner=tomee group=tomee state=directory recurse=yes
+  file:
+     path: /opt/tomee 
+     owner: tomee
+     group: tomee 
+     state: directory 
+     recurse: yes
 
 - name: droits de lecture sur le répertoire conf
   file: 
